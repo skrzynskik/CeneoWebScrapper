@@ -26,11 +26,18 @@ class Product:
                 break
 
     def exportProduct(self):
-        with open(f"./opinions/{self.productId}.json", "w", encoding="UTF-8") as f:
-            json.dump(self.opinions, f, indent=4, ensure_ascii=False)
+        with open(f"app/products/{self.productId}.json", "w", encoding="UTF-8") as f:
+            json.dump(self.toDict(), f, indent=4, ensure_ascii=False)
 
-    def __dict__(self):
-        pass
+    def toDict (self):
+        return {
+            'productId': self.productId,
+            "productName": self.productName,
+            "opinions": [opinion.toDict() for opinion in self.opinions]
+        }
 
     def __str__(self) -> str:
-        pass
+        return f"productId: {self.productId}<br>productName: {self.productName}<br>opinions<br><br>" + "<br><br>".join(str(opinion) for opinion in self.opinions)
+
+    def __repr__(self) -> str:
+        return f"productId={self.productId}, productName={self.productName}, opinions=["+",".join(opinion.__repr__() for opinion in self.opinions) + "])"
