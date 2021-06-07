@@ -17,7 +17,7 @@ class Product:
             pageDOM = BeautifulSoup(respons.text, 'html.parser')
             opinions = pageDOM.select("div.js_product-review")
             for opinion in opinions:
-                self.opinions.append(Opinion().extractOpinion(opinion))
+                self.opinions.append(Opinion().extractOpinion(opinion).transformOpinion())
             respons = requests.get(
                 "https://www.ceneo.pl/{}/opinie-".format(self.productId)+str(page), allow_redirects=False)
             if respons.status_code == 200:
@@ -29,9 +29,18 @@ class Product:
         with open(f"app/products/{self.productId}.json", "w", encoding="UTF-8") as f:
             json.dump(self.toDict(), f, indent=4, ensure_ascii=False)
 
-    def toDict (self):
+    def importProduct(self):
+        with open(f"app/products/{self.productId}.json", "r", encoding="UTF-8") as f:
+            product = json.load(f)
+            self.productName = product['productName']
+            opinions = product['opinions']
+            for opinion in opinions:
+                self.opinions.append(Opinion(**opinion))
+
+
+    def toDict(self):
         return {
-            'productId': self.productId,
+            "productId": self.productId,
             "productName": self.productName,
             "opinions": [opinion.toDict() for opinion in self.opinions]
         }
@@ -40,4 +49,4 @@ class Product:
         return f"productId: {self.productId}<br>productName: {self.productName}<br>opinions<br><br>" + "<br><br>".join(str(opinion) for opinion in self.opinions)
 
     def __repr__(self) -> str:
-        return f"productId={self.productId}, productName={self.productName}, opinions=["+",".join(opinion.__repr__() for opinion in self.opinions) + "])"
+        return f"Product(productId={self.productId}, productName={self.productName}, opinions=[" + ", ".join(opinion.__repr__() for opinion in self.opinions) + "])"

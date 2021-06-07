@@ -49,9 +49,7 @@ class Opinion:
         return {"opinionId": self.opinionId} | {key: getattr(self, key) for key in self.components.keys()}
 
     def __str__(self) -> str:
-        return f"opinionId:{self.opinionId}<br>" + "<br>".join(f"{key}:{str(getattr(self, key))}"
-        for key in self.components.keys())
-
+        return f"opinionId: {self.opinionId}<br>" + "<br>".join(f"{key}: {str(getattr(self, key))}" for key in self.components.keys())
 
     def __repr__(self) -> str:
-        return f"Opinion(opinionId={self.opinionId}, " + ", ".join(f"{key}={str(getattr(self, key))}" for key in self.components.keys())+")"
+        return f"Opinion(opinionId={self.opinionId}, " + ", ".join(f"{key}={str(getattr(self, key))}" for key in self.components.keys()) + ")"
